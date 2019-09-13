@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'package:flutter_animation_play/animated_builder.dart';
+import 'package:flutter_animation_play/animation_value.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
             title: 'Animations',
             theme: ThemeData(
-                primarySwatch: Colors.blue,
+                primarySwatch: Colors.cyan,
             ),
             home: MyHomePage(title: 'Animations'),
         );
@@ -38,14 +39,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         "height": 100.0
     };
 
-    
-
     List<Widget> _tabViews;
 
     @override
     void initState() {
         super.initState();
-        
         _generateTabViews();
         _tabController = new TabController(
                 initialIndex: 0, vsync: this, length: _tabViews.length);
@@ -60,11 +58,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             body: TabBarView(
                 controller: _tabController,
                 children: _tabViews,
-            ),
-            floatingActionButton: FloatingActionButton(
-                onPressed: () {},
-                tooltip: 'Animate',
-                child: Icon(Icons.add),
             ),
             bottomNavigationBar: BottomNavigationBar(
                 selectedItemColor: Colors.blue,
@@ -83,10 +76,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     BottomNavigationBarItem(
                         icon: Icon(Icons.transfer_within_a_station),
                         title: Text("Tween"),
-                    ),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.transfer_within_a_station),
-                        title: Text("Transform"),
                     ),
                 ],
             ),
@@ -110,13 +99,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         _tabViews = [
             _makeAnimatedContainer(),
             _makeAnimatedBuilder(),
-            Container(
-                key: UniqueKey(),
-                alignment: Alignment.center,
-                child: AnimatedContainer(
-                    duration: Duration(seconds: 1),
-                ),
-            ),
+			ValueAnimation(),
         ];
     }
 

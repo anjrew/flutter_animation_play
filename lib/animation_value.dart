@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BuilderAnimation extends StatefulWidget {
+class ValueAnimation extends StatefulWidget {
     @override
-    _BuilderAnimationState createState() => _BuilderAnimationState();
+    _ValueAnimationState createState() => _ValueAnimationState();
 }
 
-class _BuilderAnimationState extends State<BuilderAnimation>
-        with SingleTickerProviderStateMixin {
+class _ValueAnimationState extends State<ValueAnimation> with SingleTickerProviderStateMixin{
     Animation<double> _animation;
     AnimationController _animationController;
     int _delay = 1;
@@ -14,40 +13,30 @@ class _BuilderAnimationState extends State<BuilderAnimation>
     double _max = 6;
     double _sliderLevel = 0;
 
-    @override
+	@override
     void initState() {
         super.initState();
         _animationController = new AnimationController(
                 duration: Duration(seconds: _delay), vsync: this);
-        _animationController.addStatusListener((AnimationStatus status) {
-            switch (status) {
-                case AnimationStatus.completed:
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Animation completed"),
-                    ));
-                    break;
-                case AnimationStatus.dismissed:
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Animation dismissed"),
-                    ));
-                    break;
-                case AnimationStatus.forward:
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Animation forward"),
-                    ));
-                    break;
-                case AnimationStatus.reverse:
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Animation reverse"),
-                    ));
-                    break;
-            }
-        });
-        _animation = new Tween<double>(begin: _min, end: _max).animate(
-                CurvedAnimation(
-                        curve: Curves.easeInBack,
-                        reverseCurve: Curves.easeInExpo,
-                        parent: _animationController));
+		_animationController.addStatusListener((AnimationStatus status) {
+			switch(status){
+				case AnimationStatus.completed:
+					Scaffold.of(context).showSnackBar(SnackBar(content: Text("Animation completed"),));
+				break;
+				case AnimationStatus.dismissed:
+					Scaffold.of(context).showSnackBar(SnackBar(content: Text("Animation dismissed"),));
+				break;
+				case AnimationStatus.forward:
+					Scaffold.of(context).showSnackBar(SnackBar(content: Text("Animation forward"),));
+				break;
+				case AnimationStatus.reverse:
+					Scaffold.of(context).showSnackBar(SnackBar(content: Text("Animation reverse"),));
+				break;
+			}
+		});
+		_animationController.addListener(() => setState((){}));
+        _animation =
+                new Tween<double>(begin: _min, end: _max).animate(_animationController);
     }
 
     @override
@@ -59,23 +48,18 @@ class _BuilderAnimationState extends State<BuilderAnimation>
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                        Padding(
+						Padding(
                             padding: EdgeInsets.all(20),
                             child: Text(
-                                "Animated builde with animation curve",
+                                "Animating with value and setState",
                                 style: Theme.of(context).textTheme.title,
                             ),
                         ),
-                        AnimatedBuilder(
-                                animation: _animationController,
-                                child:
-                                        FlutterLogo(size: 300, style: FlutterLogoStyle.horizontal),
-                                builder: (BuildContext context, Widget child) {
-                                    return Transform.rotate(
-                                        angle: _animation.value,
-                                        child: child,
-                                    );
-                                }),
+						
+                        Transform.rotate(
+                            angle: _animation.value,
+                            child: FlutterLogo(size: 300),
+                        ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
