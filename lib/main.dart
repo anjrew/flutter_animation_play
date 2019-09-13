@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter_animation_play/animated_builder.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -25,8 +27,7 @@ class MyHomePage extends StatefulWidget {
     _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-        with TickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     int _tabIndex = 0;
     TabController _tabController;
 
@@ -37,28 +38,21 @@ class _MyHomePageState extends State<MyHomePage>
         "height": 100.0
     };
 
-    // Animated builder values
-    Animation<int> _animation;
-    AnimationController _animationController;
-    int _delay = 1;
+    
 
     List<Widget> _tabViews;
 
     @override
     void initState() {
         super.initState();
-        _animationController = new AnimationController(
-                duration: Duration(seconds: _delay), vsync: this);
-        _animation = new Tween(begin: 45, end: 360).animate(_animationController);
+        
         _generateTabViews();
         _tabController = new TabController(
                 initialIndex: 0, vsync: this, length: _tabViews.length);
     }
 
-   
     @override
     Widget build(BuildContext context) {
-
         return Scaffold(
             appBar: AppBar(
                 title: Text(widget.title),
@@ -73,15 +67,14 @@ class _MyHomePageState extends State<MyHomePage>
                 child: Icon(Icons.add),
             ),
             bottomNavigationBar: BottomNavigationBar(
-				selectedItemColor: Colors.blue,
-				unselectedItemColor: Colors.red,
+                selectedItemColor: Colors.blue,
+                unselectedItemColor: Colors.red,
                 currentIndex: _tabIndex,
                 onTap: switchTabs,
                 items: [
                     BottomNavigationBarItem(
                         icon: Icon(Icons.airplanemode_active),
                         title: Text("Animated Container"),
-						
                     ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.build),
@@ -100,81 +93,80 @@ class _MyHomePageState extends State<MyHomePage>
         );
     }
 
-    void changeAnimatedContainer() {
+    void _changeAnimatedContainer() {
         setState(() {
-            aniConiVals = {
-                "padding": Random().nextDouble() * 10,
-                "width": Random().nextDouble() * 200,
-                "height": Random().nextDouble() * 200
-            };
-			_generateTabViews();
+            _generateTabViews();
         });
     }
 
-	void switchTabs(int index){
-		setState(() {
-			_tabIndex = index;
-			_tabController.animateTo(index);
-		});
-	}
-
-	 void _generateTabViews() {
-        _tabViews = [
-          _makeAnimatedContainer(),
-          Container(
-              key: UniqueKey(),
-              alignment: Alignment.center,
-              child: Column(children: [
-                  AnimatedBuilder(
-                      animation: _animationController,
-                      child: FlutterLogo(),
-                      builder: (BuildContext context, Widget child) => Transform.rotate(
-                          angle: _animation.value.toDouble(),
-                          child: child,
-                      ),
-                  ),
-              ]),
-          ),
-          Container(
-              key: UniqueKey(),
-              alignment: Alignment.center,
-              child: AnimatedContainer(
-                  duration: Duration(seconds: 1),
-              ),
-          ),
-      ];
+    void switchTabs(int index) {
+        setState(() {
+            _tabIndex = index;
+            _tabController.animateTo(index);
+        });
     }
 
-	Widget _makeAnimatedContainer(){
-		return Container(
-				key: const Key("Animated container main"),
-				alignment: Alignment.center,
-				child: Column(
-					mainAxisAlignment: MainAxisAlignment.center,
-					crossAxisAlignment: CrossAxisAlignment.center,
-					children: <Widget>[
+    void _generateTabViews() {
+        _tabViews = [
+            _makeAnimatedContainer(),
+            _makeAnimatedBuilder(),
+            Container(
+                key: UniqueKey(),
+                alignment: Alignment.center,
+                child: AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                ),
+            ),
+        ];
+    }
+
+    Widget _makeAnimatedBuilder() {
+        return BuilderAnimation();
+    }
+
+    Widget _makeAnimatedContainer() {
+        aniConiVals = {
+            "padding": Random().nextDouble() * 10,
+            "width": Random().nextDouble() * 200,
+            "height": Random().nextDouble() * 200
+        };
+
+        return Container(
+            key: const Key("Animated container main"),
+            alignment: Alignment.center,
+            child: Column(
+				mainAxisAlignment: MainAxisAlignment.center,
+				crossAxisAlignment: CrossAxisAlignment.center,
+				children: <Widget>[
 					AnimatedContainer(
 						key: const Key("Animated container"),
 						padding: EdgeInsets.all(aniConiVals["padding"]),
 						alignment: Alignment.center,
 						decoration: BoxDecoration(
-							color: Color.fromARGB(Random().nextInt(255), Random().nextInt(255), Random().nextInt(255), Random().nextInt(255)),
-							shape: aniConiVals["width"] < 100 ? BoxShape.circle : BoxShape.rectangle,
+							color: Color.fromARGB(
+								Random().nextInt(255),
+								Random().nextInt(255),
+								Random().nextInt(255),
+								Random().nextInt(255)),
+							shape: aniConiVals["width"] < 100
+									? BoxShape.circle
+									: BoxShape.rectangle,
 							border: Border.all(
-								color: Color.fromARGB(Random().nextInt(255), Random().nextInt(255), Random().nextInt(255), Random().nextInt(255)),
-								width: Random().nextDouble() * 10
-							)
-						),
+								color: Color.fromARGB(
+									Random().nextInt(255),
+									Random().nextInt(255),
+									Random().nextInt(255),
+									Random().nextInt(255)),
+								width: Random().nextDouble() * 10)),
 						width: aniConiVals["width"],
 						height: aniConiVals["height"],
 						duration: Duration(seconds: 1),
 					),
-					Text("The Random number is ${Random().nextInt(255)}"),
 					IconButton(
-						icon: Icon(Icons.add),
-						onPressed: changeAnimatedContainer,
+						icon: Icon(Icons.track_changes),
+						onPressed: _changeAnimatedContainer,
 					),
 				]),
-          );
-	}
+        );
+    }
 }
